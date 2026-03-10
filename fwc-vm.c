@@ -58,7 +58,7 @@
 	X(FIND,   "find",     push((cell)findInDict((char *)0)); ) \
 	X(KEY,    "key",      push(key()); ) \
 	X(QKEY,   "key?",     push(qKey()); ) \
-	X(EMIT,   "emit",     emit(pop()); ) \
+	X(EMIT,   "emit",     emit((char)pop()); ) \
 	X(fOPEN,  "fopen",    t = pop(); TOS = fOpen(TOS, t); ) \
 	X(fCLOSE, "fclose",   fClose(pop()); ) \
 	X(fREAD,  "fread",    t = pop(); n = pop(); TOS = fRead(TOS, n, t); ) \
@@ -126,7 +126,7 @@ int isNum(const char *w, cell b) {
 DE_T *addToDict(const char *w) {
 	w = checkWord((char*)w);
 	if (isTmpW(w)) { DE_T *x = &tmpWords[w[1]-'0']; x->xt = here; return x; }
-	int ln = strlen(w);
+	int ln = (int)strlen(w);
 	if (ln == 0) { return (DE_T*)0; }
 	byte sz = CELL_SZ + 3 + ln + 1; // xt, sz, fl, ln, name[], null
 	while (sz & 0x03) { ++sz; }
@@ -140,7 +140,7 @@ DE_T *addToDict(const char *w) {
 DE_T *findInDict(char *w) {
 	w = checkWord((char*)w);
 	if (isTmpW(w)) { return &tmpWords[w[1]-'0']; }
-	int ln = strlen(w);
+	int ln = (int)strlen(w);
 	for (DE_T *dp=(DE_T*)last; dp<(DE_T*)&mem[MEM_SZ]; dp=(DE_T*)((cell)dp+dp->sz)) {
 		if ((dp->ln == ln) && (strEqI(dp->nm, w))) { return dp; }
 	}

@@ -3,3 +3,5 @@ fwc
 /Debug
 /Release
 /s1.vcxproj.user
+/x64/Release
+*.user
