@@ -56,7 +56,7 @@ extern void addLit(const char *name, cell val);
 extern void fwcInit();
 extern int nextWord();
 extern DE_T *addToDict(const char *w);
-extern void compileNum(cell n);
+extern void lit(cell n);
 extern cell state;
 extern ucell outputFp;
 extern char mem[];
