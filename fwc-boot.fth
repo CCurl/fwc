@@ -204,12 +204,12 @@ val blk@   (val) t0
 : blk-read  ( -- )    blk-fn fopen-r ?dup if0 fn ztype ."  not found" drop exit then t2 ;
 : t1        ( fh-- )  >r  blk-addr blk-sz r@ fwrite drop  r> fclose ;
 : blk-write ( -- )    blk-fn fopen-w ?dup if0 ." -err-" drop exit then t1 ;
-: blk-nullt ( -- )    0 blk-addr blk-sz + 1- c! ;
-: load      ( n-- )   blk! blk-read blk-nullt blk-addr outer ;
-: load-next ( n-- )   blk! blk-read blk-nullt blk-addr >in ! ;
+: t0        ( n-- )   blk!  blk-read  0 blk-addr blk-sz + 1- c!  blk-addr ;
+: load      ( n-- )   t0 outer ;
+: load-next ( n-- )   t0 >in ! ;
 
 : fn-blk ( n-- )  blk@ >r  blk! blk-fn  r> blk! ;
-: ed ( n-- ) fn-blk pad z" vi " s-cpy s-scat system ;
+: ed     ( n-- )  fn-blk pad z" vi " s-cpy s-scat system ;
 
 marker
 ( *** App code - starts in block-001 *** )
