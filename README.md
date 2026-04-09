@@ -13,6 +13,9 @@ In a FWC program, each instruction is a single CELL.
 - Else, if it is between `0` and `LIT_MASK`, then it is a literal.
 - Else, it is the XT (code address) of a word in the dictionary.
 
+### STATES in FWC
+Setting `STATE` to 999 signals FWC to exit.
+
 ### FWC hard-codes the following IMMEDIATE words:
 
 | Word | Behavior |
@@ -22,29 +25,38 @@ In a FWC program, each instruction is a single CELL.
 |  (   | Skips words until the next ')' word. |
 |  \\  | Skips words until the end of the line. |
 
-Setting `STATE` to 999 signals FWC to exit.
+### ColorForth influences
+
+FWC will change the state depending on embedded bytes in the whitespace.<br/>
+NOTE: I cannot use '$00' for INTERPRET because that is the line terminator.<br/>
+
+| Byte | Behavior                      |
+|:--   |:--                            |
+| $01  | Set `STATE` to INTERPRET (0). |
+| $02  | Set `STATE` to COMPILE (1).   |
 
 ## INLINE words
 
 An INLINE word is somewhat similar to a macro in other languages.<br/>
 When a word is INLINE, its definition is copied to the target, up to the first `EXIT`.<br/>
-When not INLINE, a call is made to the word instead. **NOTE**: if the next<br/>
-instruction is `EXIT`, it becomes a `JUMP` instead (the tail-call optimization).<br/>
+When not INLINE, a call is made to the word instead.<br/>
+**NOTE**: if the next instruction is `EXIT`, it becomes a `JUMP` instead (the tail-call optimization).<br/>
 
 ## Transient words
 
 Words 't0' through 't9' are transient and are not added to the dictionary.<br/>
-They are **case sensitive**: 't0' is a transient word, 'T0' is not.<br/>
-They help with factoring code and and keep the dictionary uncluttered.<br/>
+They are **case sensitive**; 't0' is a transient word, 'T0' is not.<br/>
+They help with factoring code and keep the dictionary uncluttered.<br/>
 They can be reused as many times as desired.
 
 ## Built-in variables
 
-There are 3 built-in variables `x`, `y`, and `z`. There are also `+L` and `-L` that can<br/>
-be used to create 3 local variables under the user's control. `+L` and `-L` can be used<br/>
-at any time for any reason to create a new frame for new versions of the variables.
+There are 3 built-in variables: `x`, `y`, and `z`.<br/>
+Use `+L` to create new versions of the variables.<br/>
+Use `-L` to destroy the most recently created variables.<br/>
+`+L` and `-L` can be used at any time for any reason.
 
-## Building
+## Building FWC
 
 - Linux: There is a makefile.
   - The default configuration is 64-bits.

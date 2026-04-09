@@ -96,11 +96,11 @@ char *checkWord(char *w) { return w ? w : (nextWord() ? &wd[0] : NULL); }
 void lit1(cell n) {	comma((ucell)n | LIT_MASK); }
 void lit2(cell n) {	comma(LIT); comma(n); }
 void compileNum(cell n) { btwi(n,0,LIT_BITS) ? lit1(n) : lit2(n); }
-void compileErr(char *w) { zType("\n-word:["); zType(w); zType("]?-\n"); }
+void compileErr(char* w) { zType("\n-word:["); zType(w); zType("]?-\n"); }
 
 int nextWord() {
 	int ln = 0;
-	while (*toIn && (*toIn < 33)) { ++toIn; }
+	while (*toIn && (*toIn < 33)) { if (btwi(*toIn,1,2)) { state=(*toIn-1); } ++toIn; }
 	while (*toIn > 32) { wd[ln++] = *(toIn++); }
 	wd[ln] = 0;
 	return ln;
