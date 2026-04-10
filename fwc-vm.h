@@ -2,7 +2,7 @@
 
 #ifndef __QWC_H__
 
-#define VERSION         20260408
+#define VERSION         20260410
 #ifdef _MSC_VER
     #define _CRT_SECURE_NO_WARNINGS
     #define IS_WINDOWS 1
@@ -23,12 +23,14 @@
     #define LIT_MASK      0x7FF8000000000000
     #define LIT_BITS      0x0007FFFFFFFFFFFF
     #define CELL_SZ                8
+    #define NAME_SZ               22
     #define cell             int64_t
     #define ucell           uint64_t
 #else
     #define LIT_MASK      0x40000000
     #define LIT_BITS      0x3FFFFFFF
     #define CELL_SZ                4
+    #define NAME_SZ               26
     #define cell             int32_t
     #define ucell           uint32_t
 #endif
@@ -46,7 +48,7 @@
 #define L2            lstk[lsp-2]
 
 enum { INTERPRET=0, COMPILE=1, BYE=999 };
-typedef struct { ucell xt; byte sz; byte fl; byte ln; char nm[1]; } DE_T;
+typedef struct { ucell xt; byte fl; byte ln; char nm[NAME_SZ]; } DE_T;
 typedef struct { char *name; ucell value; } NVP_T;
 
 // These are defined by fwc-vm.c
@@ -55,7 +57,7 @@ extern void outer(const char *src);
 extern void addLit(const char *name, cell val);
 extern void fwcInit();
 extern int nextWord();
-extern DE_T *addToDict(const char *w);
+extern DE_T *addToDict(char *w);
 extern void compileNum(cell n);
 extern cell state;
 extern ucell outputFp;

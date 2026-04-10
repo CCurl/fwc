@@ -4,8 +4,8 @@
 
 : last (l) @ ;
 : here (h) @ ;
-: inline    ( -- ) $40 last cell 1+ + c! ;
-: immediate ( -- ) $80 last cell 1+ + c! ;
+: inline    ( -- ) $40 last cell + c! ;
+: immediate ( -- ) $80 last cell + c! ;
 : cells  ( n--n' ) cell * ; inline
 : ->code ( off--addr ) cells mem + ;
 : code@  ( off--dw )  ->code @ ;
@@ -43,7 +43,7 @@
 ( the original here and last - used by 'rb' )
 const -last-   const -here-
 
-mem mem-sz + const dict-end
+mem mem-sz + 1- const dict-end
 32 ->code const (vh)
 64 1024 * ->code const vars
 vars (vh) !
@@ -153,19 +153,19 @@ cell var (buf)
         stk swap for cell+ dup @ . next drop
     then ')' emit ;
 
-: .word ( de-- ) cell+ 3 + ztype ;
+: .word ( de-- ) cell+ 2 + ztype ;
 : words ( -- ) +L last x! 0 y! 1 z! begin
         x@ dict-end < if0 '(' emit z@ . ." words)" -L exit then
         x@ .word tab z++
-        x@ cell+ 2 + c@ 7 > if y++ then
+        x@ cell+ 1+ c@ 7 > if y++ then
         y@+ 12 > if cr 0 y! then
-        x@ dup cell+ c@ + x!
+        x@ de-sz + x!
     again ;
 
 : words-n ( n-- ) +L last x! 0 y! for
         x@ .word tab
         y@+ 12 > if cr 0 y! then
-		x@ dup cell+ c@ + x!
+		x@ de-sz + x!
     next -L ;
 
 cell var t4   cell var t5
