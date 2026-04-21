@@ -84,10 +84,10 @@ On startup, FWC does the following:
 |   0       | exit     | (--)         | PC = R-TOS. Discard R-TOS. If (PC=0) then stop. |
 |   1       | lit      | (--)         | Push code[PC]. Increment PC. |
 |   2       | jmp      | (--)         | PC = code[PC]. |
-|   3       | jmpz     | (n--)        | If (`n`==0) then PC = code[PC] else PC = PC+1. |
-|   4       | jmpnz    | (n--)        | If (`n`!=0) then PC = code[PC] else PC = PC+1. |
-|   5       | njmpz    | (n--n)       | If (`n`==0) then PC = code[PC] else PC = PC+1. |
-|   6       | njmpnz   | (n--n)       | If (`n`!=0) then PC = code[PC] else PC = PC+1. |
+|   3       | jmpz     | (n--)        | If (n==0) then PC = code[PC] else PC = PC+1. |
+|   4       | jmpnz    | (n--)        | If (n!=0) then PC = code[PC] else PC = PC+1. |
+|   5       | njmpz    | (n--n)       | If (n==0) then PC = code[PC] else PC = PC+1. |
+|   6       | njmpnz   | (n--n)       | If (n!=0) then PC = code[PC] else PC = PC+1. |
 |   7       | dup      | (n--n n)     | Duplicate `n`. |
 |   8       | drop     | (n--)        | Discard `n`. |
 |   9       | swap     | (a b--b a)   | Swap `a` and `b`. |
@@ -119,13 +119,13 @@ On startup, FWC does the following:
 |  35       | <        | (a b--f)     | If (`a`<`b`) then `f` = 1 else `f` = 0. |
 |  36       | =        | (a b--f)     | If (`a`=`b`) then `f` = 1 else `f` = 0. |
 |  37       | >        | (a b--f)     | If (`a`>`b`) then `f` = 1 else `f` = 0. |
-|  38       | 0=       | (n--f)       | If (`n`==0) then `f` = 1 else `f` = 0. |
+|  38       | 0=       | (n--f)       | If (n==0) then `f` = 1 else `f` = 0. |
 |  39       | min      | (a b--c)     | If (`a` < `b`) `c` = `a` else `b`. |
 |  40       | max      | (a b--c)     | If (`a` > `b`) `c` = `a` else `b`. |
 |  41       | +!       | (n a--)      | Add `n` to the cell at `a`. |
 |  42       | for      | (C--)        | Start a FOR loop starting at 0. Upper limit is `C`. |
 |  43       | i        | (--I)        | Push current loop index `I`. |
-|  44       | next     | (--)         | Increment I. If I < C then jump to loop start. |
+|  44       | next     | (--)         | Increment I. If (I < C) then jump to loop start. |
 |  45       | and      | (a b--c)     | `c` = `a` and `b`. |
 |  46       | or       | (a b--c)     | `c` = `a` or  `b`. |
 |  47       | xor      | (a b--c)     | `c` = `a` xor `b`. |
