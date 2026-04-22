@@ -84,6 +84,9 @@ cell pop() { return (0 < dsp) ? dstk[dsp--] : 0; }
 void rpush(cell v) { if (rsp < STK_SZ) { rstk[++rsp] = v; } }
 cell rpop() { return (0 < rsp) ? rstk[rsp--] : 0; }
 void comma(ucell val) { code[here++] = val; }
+void lit1(cell n) {	comma((ucell)n | LIT_MASK); }
+void lit2(cell n) {	comma(LIT); comma(n); }
+void compileNum(cell n) { btwi(n,0,LIT_BITS) ? lit1(n) : lit2(n); }
 void doComment() { while (nextWord() && !strEqI(wd, ")")) {} }
 void doLineComment() { while ( *toIn && (*toIn != 10) ) { ++toIn; } }
 void doNum() { if (state == COMPILE) { compileNum(pop()); } }
@@ -93,9 +96,6 @@ void addLit(const char *name, cell val) { addToDict((char*)name); compileNum(val
 void doInline(ucell xt) { while (code[xt] != EXIT) { comma(code[xt++]); } }
 void doInterp(ucell xt) { code[10]=xt; code[11]=EXIT; inner(10); }
 char *checkWord(char *w) { return w ? w : (nextWord() ? &wd[0] : NULL); }
-void lit1(cell n) {	comma((ucell)n | LIT_MASK); }
-void lit2(cell n) {	comma(LIT); comma(n); }
-void compileNum(cell n) { btwi(n,0,LIT_BITS) ? lit1(n) : lit2(n); }
 void compileErr(char* w) { zType("\n-word:["); zType(w); zType("]?-\n"); }
 
 int nextWord() {

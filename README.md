@@ -11,7 +11,7 @@ In a FWC program, each instruction is a single CELL.
 - A CELL is either a QWord (64-bits), or a DWord (32-bits).
 - If <= the last primitive (system), then it is a primitive.
 - Else, if it is between `0` and `LIT_MASK`, then it is a literal.
-- Else, it is the XT (code address) of a word in the dictionary.
+- Else, it is the XT (address) of a word in the dictionary.
 
 ### STATES in FWC
 Setting `STATE` to 999 signals FWC to exit.
