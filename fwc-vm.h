@@ -3,6 +3,7 @@
 #ifndef __QWC_H__
 
 #define VERSION         20260410
+#define BOOT_FN         "fwc-boot.fth"
 #ifdef _MSC_VER
     #define _CRT_SECURE_NO_WARNINGS
     #define IS_WINDOWS 1

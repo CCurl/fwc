@@ -184,9 +184,9 @@ cell var t4   cell var t5   cell var t6
 : s-cat  ( dst src--dst ) over s-end  over s-len 1+  cmove ;
 : s-catc ( dst ch--dst )  over s-end  +L1  c!x+  0 c!x+  -L ;
 : s-catn ( dst num--dst ) <# #s #> s-cat ;
+: s-scat ( src dst--dst ) swap s-cat ;
 : s-eqn  ( s1 s2 n--f ) +L3 z@ for c@x+ c@y+ = if0 -L 0 unloop exit then next -L 1 ;
 : s-eq   ( s1 s2--f ) dup s-len 1+ s-eqn ;
-: s-scat ( src dst--dst ) swap s-cat ;
 
 ( Disk: 64 blocks, 16KB bytes each )
 : kb ( n--m ) 1024 * ;
@@ -208,8 +208,8 @@ val blk@   (val) t0
 : load      ( n-- )   t0 outer ;
 : load-next ( n-- )   t0 >in ! ;
 
-: fn-blk ( n-- )  blk@ >r  blk! blk-fn  r> blk! ;
-: ed     ( n-- )  fn-blk pad z" vi " s-cpy s-scat system ;
+: edit   ( n-- )  blk! pad z" vi " s-cpy blk-fn s-cat system ;
+: ed     ( -- )   blk@ edit ;
 
 marker
 ( *** App code - starts in block-001 *** )

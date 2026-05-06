@@ -60,7 +60,7 @@ char tib[128], fn[32];
 cell timer() { return (cell)clock(); }
 void zType(const char *str) { fputs(str, outputFp ? (FILE*)outputFp : stdout); }
 void emit(const char ch) { fputc(ch, outputFp ? (FILE*)outputFp : stdout); }
-char *bootFn(char *f) { sprintf(fn, "%sfwc-boot.fth", f); return fn; }
+char *bootFn(char *f) { sprintf(fn, "%s%s", f, BOOT_FN); return fn; }
 
 cell fOpen(cell name, cell mode) { return (cell)fopen((char*)name, (char*)mode); }
 void fClose(cell fh) { fclose((FILE*)fh); }
@@ -77,8 +77,7 @@ void repl() {
 
 
 void boot(const char *fn) {
-	if (!fn) { fn = "fwc-boot.fth"; }
-	cell fp = fOpen((cell)fn, (cell)"rb");
+	cell fp = fn ? fOpen((cell)fn, (cell)"rb") : 0;
 	if (!fp) { fp = fOpen((cell)bootFn(""), (cell)"rb"); }
 	if (!fp) { fp = fOpen((cell)bootFn(BIN_DIR), (cell)"rb"); }
 	if (fp) {
@@ -100,7 +99,7 @@ int main(int argc, char *argv[]) {
 		tib[3] = '0' + i;
 		addLit(tib, (cell)argv[i]);
 	}
-	boot((1<argc) ? argv[1] : 0);
+	boot((1<argc) ? argv[1] : NULL);
 	while (state != BYE) { repl(); }
 	ttyMode(0);
 	return 0;

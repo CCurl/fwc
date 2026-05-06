@@ -5,13 +5,14 @@ FWC is a minimal Forth system that can run stand-alone or be embedded into anoth
 FWC is implemented in 3 files: (fwc-vm.c, fwc-vm.h, system.c). <br/>
 The FWC VM is implemented in under 200 lines of code.<br/>
 FWC has 64 primitives.<br/>
-The primitives are quite complete and any Forth system can be built from them.
+The primitives are quite complete and any Forth system can be built from them.<br/>
+There is a default bootstrap file `fwc-boot.fth` included.
 
 In a FWC program, each instruction is a single CELL.
 - A CELL is either a QWord (64-bits), or a DWord (32-bits).
 - If <= the last primitive (system), then it is a primitive.
-- Else, if it is between `0` and `LIT_MASK`, then it is a literal.
-- Else, it is the XT (address) of a word in the dictionary.
+- Else, if it is in the range from `0` to `LIT_MASK`, then it is a literal.
+- Else, it is the XT (code address) of a word in the dictionary.
 
 ### STATES in FWC
 Setting `STATE` to 999 signals FWC to exit.
@@ -23,7 +24,7 @@ Setting `STATE` to 999 signals FWC to exit.
 |  :   | Add the next word to the dictionary, set `STATE` to COMPILE (1). |
 |  ;   | Compile EXIT and change `STATE` to INTERPRET (0). |
 |  (   | Skips words until the next ')' word. |
-|  \\  | Skips words until the end of the line. |
+|  \\  | Skips words until the end next new-line character ($0A). |
 
 ### ColorForth influences
 
@@ -67,15 +68,15 @@ Use `-L` to destroy the most recently created variables.<br/>
 ## FWC Startup Behavior
 
 On startup, FWC does the following:
-- Create 'argc' with the count of command-line arguments
-- For each argument, create 'argX' with the address of the argument string
-- E.G. "arg0 ztype" will print `fwc`
+- Create 'argc' with the count of command-line arguments.
+- For each argument, create 'argX' with the address of th1.e argument string
+- For example, `arg0 ztype` will print `fwc`.
 - If arg1 exists and names a file that can be opened, load that file.
-- Else, try to load file 'fwc-boot.fth' in the local folder '.'.
-- Else, try to load file '`BIN_DIR`fwc-boot.fth' in the "bin" folder.
+- Else, try to load file 'fwc-boot.fth' in the current folder.
+- Else, try to load file 'fwc-boot.fth' in the `BIN_DIR` folder.
 - On Linux, `BIN_DIR` is "/home/chris/bin/".
 - On Windows, `BIN_DIR` is "D:\\bin\\".
-- `BIN_DIR` is defined in fwc-vm.h. Adjust it in `fwc-vm.h` for your system if needed.
+- `BIN_DIR` is defined in fwc-vm.h. Adjust it in `fwc-vm.h` for your system as desired.
 
 ## The VM Primitives
 
@@ -129,13 +130,13 @@ On startup, FWC does the following:
 |  45       | and      | (a b--c)     | `c` = `a` and `b`. |
 |  46       | or       | (a b--c)     | `c` = `a` or  `b`. |
 |  47       | xor      | (a b--c)     | `c` = `a` xor `b`. |
-|  48       | ztype    | (a--)        | Output null-terminated string `a`. |
+|  48       | ztype    | (a--)        | Output the null-terminated string `a`. |
 |  49       | find     | (--a)        | Push the dictionary address `a` of the next word. |
 |  50       | key      | (--n)        | Push the next keypress `n`. Wait if necessary. |
 |  51       | key?     | (--f)        | Push 1 if a keypress is available, else 0. |
 |  52       | emit     | (c--)        | Output char `c`. |
 |  53       | fopen    | (nm md--fh)  | Open file `nm` using mode `md` (`fh`=0 if error). |
-|  54       | fclose   | (fh--)       | Close file `fh`. Discard TOS. |
+|  54       | fclose   | (fh--)       | Close file `fh`. |
 |  55       | fread    | (a sz fh--n) | Read `sz` chars from file `fh` to `a`. |
 |  56       | fwrite   | (a sz fh--n) | Write `sz` chars to file `fh` from `a`. |
 |  57       | ms       | (n--)        | Wait/sleep for `n` milliseconds |
@@ -158,6 +159,8 @@ On startup, FWC does the following:
 | lstk      | (--a) | Address of the loop stack. |
 | (rsp)     | (--a) | Address of the return stack pointer. |
 | rstk      | (--a) | Address of the return stack. |
+| (tsp)     | (--a) | Address of the x/y/z stack pointer. |
+| tstk      | (--a) | Address of the x/y/z stack. |
 | (sp)      | (--a) | Address of the data stack pointer. |
 | stk       | (--a) | Address of the data stack. |
 | state     | (--a) | Address of STATE. |
@@ -165,6 +168,7 @@ On startup, FWC does the following:
 | mem       | (--a) | Address of the beginning of the memory area. |
 | mem-sz    | (--n) | The number of BYTEs in the memory area. |
 | >in       | (--a) | Address of the text input buffer pointer. |
+| de-sz     | (--n) | The size of a dictionary in bytes (32). |
 | cell      | (--n) | The size of a CELL in bytes (4 or 8). |
 
 ##   Embedding FWC in your C or C++ project
@@ -174,6 +178,7 @@ See system.c. It embeds the FWC VM into a C program.
 Example usage:
 ```c
 #include "fwc-vm.h"
+// ... implement the functions fwc-vm.c needs
 fwcInit();
-outer("your forth code here");
+outer(".\" Hello World!\"");
 ```
