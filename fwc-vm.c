@@ -87,14 +87,14 @@ void comma(ucell val) { code[here++] = val; }
 void lit1(cell n) {	comma((ucell)n | LIT_MASK); }
 void lit2(cell n) {	comma(LIT); comma(n); }
 void compileNum(cell n) { btwi(n,0,LIT_BITS) ? lit1(n) : lit2(n); }
+void doNum() { if (state == COMPILE) { compileNum(pop()); } }
 void doComment() { while (nextWord() && !strEqI(wd, ")")) {} }
 void doLineComment() { while ( *toIn && (*toIn != 10) ) { ++toIn; } }
-void doNum() { if (state == COMPILE) { compileNum(pop()); } }
+void doInline(ucell xt) { while (code[xt] != EXIT) { comma(code[xt++]); } }
+void doInterp(ucell xt) { code[10]=xt; code[11]=EXIT; inner(10); }
 int  isTmpW(const char *w) { return (w[0]=='t') && btwi(w[1],'0','9') && (w[2]==0) ? 1 : 0; }
 void addPrim(const char *nm, ucell op) { DE_T *dp = addToDict((char*)nm); if (dp) { dp->xt = op; } }
 void addLit(const char *name, cell val) { addToDict((char*)name); compileNum(val); comma(EXIT); }
-void doInline(ucell xt) { while (code[xt] != EXIT) { comma(code[xt++]); } }
-void doInterp(ucell xt) { code[10]=xt; code[11]=EXIT; inner(10); }
 char *checkWord(char *w) { return w ? w : (nextWord() ? &wd[0] : NULL); }
 void compileErr(char* w) { zType("\n-word:["); zType(w); zType("]?-\n"); }
 
@@ -115,8 +115,8 @@ int isNum(const char *w, cell b) {
 	if ((b == 10) && (w[0] == '-')) { isNeg = 1; ++w; }
 	if (w[0] == 0) { return 0; }
 	while (*w) {
-		char c = *w++; if (c >= 'A' && c <= 'Z') c += 32;
-		int val = btwi(c,'0','9') ? c-'0' : btwi(c,'a','f') ? c-'a'+10 : -1;
+		char c = *w++; if (c >= 'A' && c <= 'Z') { c += 32; }
+		int val = btwi(c,'0','9') ? c-'0' : btwi(c,'a','z') ? c-'a'+10 : -1;
 		if (btwi(val, 0, b-1)) { n=(n*b)+val; } else { return 0; }
 	}
 	push(isNeg ? -n : n);
@@ -141,7 +141,7 @@ DE_T *findInDict(char *w) {
 	if (isTmpW(w)) { return &tmpWords[w[1]-'0']; }
 	int ln = (int)strlen(w);
 	for (DE_T *dp=(DE_T*)last; dp<(DE_T*)&mem[MEM_SZ]; dp++) {
-		if ((dp->ln == ln) && (strEqI(dp->nm, w))) { return dp; }
+		if ((dp->ln == ln) && strEqI(dp->nm, w)) { return dp; }
 	}
 	return (DE_T *)0;
 }
