@@ -13,7 +13,7 @@
 #else
     #define strEqI(s, d)  (strcasecmp(s, d) == 0)
     #define BIN_DIR "/home/chris/bin/"
-	#define SYSTEM  ": LINUX 1 ; : WINDOWS 0 ;"
+	#define SYSTEM  ": WINDOWS 0 ; : LINUX 1 ;"
 #endif
 
 #include <stdio.h>

@@ -190,6 +190,7 @@ void fwcInit() {
 		{ ">in",     (cell)&toIn},     { "de-sz",     (cell)sizeof(DE_T)},
 		{ "cell",    (cell)CELL_SZ },  { 0, 0 }
 	};
+	outer(SYSTEM);
 	for (int i = 0; nv[i].name; i++) { addLit(nv[i].name, nv[i].value); }
 	for (int i = 0; prims[i].name; i++) { addPrim(prims[i].name, prims[i].value); }
 }

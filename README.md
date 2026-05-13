@@ -152,6 +152,8 @@ On startup, FWC does the following:
 | Word      | Stack | Description |
 |:--        |:--    |:-- |
 | version   | (--n) | Current version number. |
+| WINDOWS   | (--n) | If the system is Windows, 1 Else 0. |
+| LINUX     | (--n) | If the system is Linux, 1 Else 0. |
 | output-fp | (--a) | Address of the output file handle. 0 means STDOUT. |
 | (h)       | (--a) | Address of HERE. |
 | (l)       | (--a) | Address of LAST. |
