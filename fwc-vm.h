@@ -2,16 +2,18 @@
 
 #ifndef __QWC_H__
 
-#define VERSION         20260410
+#define VERSION         20260512
 #define BOOT_FN         "fwc-boot.fth"
 #ifdef _MSC_VER
     #define _CRT_SECURE_NO_WARNINGS
     #define IS_WINDOWS 1
     #define strEqI(s, d)  (_strcmpi(s, d) == 0)
     #define BIN_DIR "\\bin\\"
+	#define SYSTEM  ": WINDOWS 1 ; : LINUX 0 ;"
 #else
     #define strEqI(s, d)  (strcasecmp(s, d) == 0)
     #define BIN_DIR "/home/chris/bin/"
+	#define SYSTEM  ": LINUX 1 ; : WINDOWS 0 ;"
 #endif
 
 #include <stdio.h>

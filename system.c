@@ -93,6 +93,7 @@ void boot(const char *fn) {
 
 int main(int argc, char *argv[]) {
 	fwcInit();
+	outer(SYSTEM);
 	addLit("argc", (cell)argc);
 	strcpy(tib, "argX");
 	for (int i=0; (i<argc) && (i<10); i++) {
