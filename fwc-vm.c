@@ -187,7 +187,7 @@ void fwcInit() {
 		{ "(sp)",    (cell)&dsp },     { "stk",       (cell)&dstk[0] },
 		{ "state",   (cell)&state },   { "base",      (cell)&base },
 		{ "mem",     (cell)&mem[0] },  { "mem-sz",    (cell)MEM_SZ },
-		{ ">in",     (cell)&toIn},     { "de-sz",     (cell)sizeof(DE_T)},
+		{ ">in",     (cell)&toIn },    { "de-sz",     (cell)sizeof(DE_T)},
 		{ "cell",    (cell)CELL_SZ },  { 0, 0 }
 	};
 	outer(SYSTEM);
