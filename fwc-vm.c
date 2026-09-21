@@ -69,14 +69,14 @@
 	X(OUTER,  "outer",    t = pop(); outer((char*)t); ) \
 	X(MOVE,   "cmove",    t = pop(); n = pop(); memmove((void*)n, (void*)pop(), t); ) \
 	X(SLEN,   "s-len",    TOS = strlen((char*)TOS); ) \
-	X(LASTOP, "system",   system((char*)pop()); )
+	X(SYS,    "system",   system((char*)pop()); )
 
-enum { PRIMS(X1) };
+enum { PRIMS(X1) FIRST_FREE };
 
 char mem[MEM_SZ], *toIn, wd[32];
 ucell *code=(ucell*)&mem[0], dsp, rsp, lsp, tsp, outputFp;
 cell dstk[STK_SZ+1], rstk[STK_SZ+1], lstk[STK_SZ+1], tstk[STK_SZ+1];
-cell here=LASTOP+1, last=(cell)&mem[MEM_SZ], base=10, state=INTERPRET;
+cell here=FIRST_FREE, last=(cell)&mem[MEM_SZ], base=10, state=INTERPRET;
 DE_T tmpWords[10];
 
 void push(cell v) { if (dsp < STK_SZ) { dstk[++dsp] = v; } }
@@ -151,12 +151,11 @@ void inner(ucell pc) {
 next: ir = code[pc++];
 	switch (ir)	{
 		PRIMS(X2)
-	default:
-		if ((ir & LIT_MASK) == LIT_MASK) { push( (cell)(ir & LIT_BITS) ); goto next; }
-		if (code[pc] != EXIT) { rpush(pc); } // tail-call optimization
-		pc = ir;
-		goto next;
 	}
+	if ((ir & LIT_MASK) == LIT_MASK) { push( (cell)(ir & LIT_BITS) ); goto next; }
+	if (code[pc] != EXIT) { rpush(pc); } // tail-call optimization
+	pc = ir;
+	goto next;
 }
 
 void outer(const char *src) {
